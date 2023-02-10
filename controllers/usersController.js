@@ -2,6 +2,7 @@ const User = require("../model/userModel")
 const brcypt = require('bcrypt');
 
 module.exports.register = async (req, res, next) => {
+    console.info("Service Register call")
     try {
 
         const { username, email, password } = req.body;
@@ -28,13 +29,14 @@ module.exports.register = async (req, res, next) => {
         return res.json({ status: true, user })
 
     } catch (e) {
+        console.info("Error in service Register", e);
         next(e)
     }
 
 }
 
 module.exports.login = async (req, res, next) => {
-
+    console.info("Service Login call")
     try {
 
         const { username, password } = req.body;
@@ -57,31 +59,34 @@ module.exports.login = async (req, res, next) => {
         return res.json({ status: true, user })
 
     } catch (e) {
+        console.info("Error in service login", e)
         next(e)
     }
 
 }
 
 module.exports.setAvatar = async (req, res, next) => {
-
+    console.info("Service setAvatar call")
     try {
         const userId = req.params.id;
         const avatarImage = req.body.image;
         const userData = await User.findByIdAndUpdate(userId, {
             isAvatarImageSet: true,
             avatarImage,
-        })
+        }, { new: true })
+
         return res.json({ isSet: userData.isAvatarImageSet, image: userData.avatarImage })
     } catch (e) {
+        console.info("Error in service setAvatar", e)
         next(e)
     }
 
 }
 
 module.exports.getAllUsers = async (req, res, next) => {
-
+    console.info("Service getAllUsers call")
     try {
-        const users = await User.find({_id: {$ne: req.params.id}}).select([
+        const users = await User.find({ _id: { $ne: req.params.id } }).select([
             "email",
             "username",
             "avatarImage",
@@ -89,6 +94,7 @@ module.exports.getAllUsers = async (req, res, next) => {
         ])
         return res.json(users)
     } catch (e) {
+        console.info("Error in service getAllUsers", e)
         next(e)
     }
 

@@ -19,10 +19,9 @@ module.exports.addMessage = async (req, res, next) => {
 };
 
 module.exports.getAllMessage = async (req, res, next) => {
-
+    console.info("Service getAllMessage call")
     try {
         const { from, to } = req.body;
-        console.log(">>>>getAllMessage from: ", from, " to:", to)
         const messages = await messageModal.find({
             users: {
                 $all: [from, to],
@@ -38,6 +37,7 @@ module.exports.getAllMessage = async (req, res, next) => {
 
         return res.json(projectMessages);
     } catch (e) {
+        console.info("Error in service getAllMessage", e)
         next(e);
     }
 };
