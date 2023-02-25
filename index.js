@@ -29,7 +29,8 @@ const server = app.listen(process.env.PORT, () => {
 
 const io = socket(server, {
     cors: {
-        origin: "http://localhost:3000",
+        // origin: "http://localhost:3000",
+        origin: "http://rohan-chat-app.s3-website.ap-south-1.amazonaws.com",
         credentials: true,
     }
 })
