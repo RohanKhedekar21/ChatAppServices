@@ -6,7 +6,7 @@ const messageRoutes = require("./routes/messagesRoute")
 
 const app = express();
 const socket = require("socket.io")
-require("dotenv").config({path: __dirname +'/.env'});
+require("dotenv").config({ path: __dirname + '/.env' });
 
 app.use(cors());
 app.use(express.json())
@@ -29,8 +29,8 @@ const server = app.listen(process.env.PORT, () => {
 
 const io = socket(server, {
     cors: {
-        // origin: "http://localhost:3000",
-        origin: "http://rohan-chat-app.s3-website.ap-south-1.amazonaws.com",
+        origin: "http://localhost:3000",
+        // origin: "http://rohan-chat-app.s3-website.ap-south-1.amazonaws.com",
         credentials: true,
     }
 })
@@ -49,4 +49,29 @@ io.on('connection', (socket) => {
             socket.to(sendUserSocket).emit("msg-recieve", data.message);
         }
     })
+
+    socket.on('user:call', async ({ to, from, offer }) => {
+        console.log(">>>>user:call")
+        const recieverSocket = onlineUsers.get(to);
+        if (recieverSocket) {
+            console.log(">>>>recieverSocket", recieverSocket)
+            socket.to(recieverSocket).emit('incomming:call', { from: from, offer })
+        }
+    })
+
+    socket.on("call:accepted", ({ to, ans }) => {
+        const recieverSocket = onlineUsers.get(to);
+        io.to(recieverSocket).emit("call:accepted", { from: socket.id, ans });
+    });
+
+    socket.on("peer:nego:needed", ({ to, offer }) => {
+        console.log("peer:nego:needed", offer);
+        const recieverSocket = onlineUsers.get(to);
+        io.to(recieverSocket).emit("peer:nego:needed", { from: socket.id, offer });
+    });
+
+    socket.on("peer:nego:done", ({ to, ans }) => {
+        console.log("peer:nego:done", ans);
+        io.to(to).emit("peer:nego:final", { from: socket.id, ans });
+    });
 })
