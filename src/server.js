@@ -3,9 +3,10 @@ const app = require("./app");
 const { setupMongoConnection } = require("./config/dbConnection");
 const { setupSocket } = require("./config/socketSetup");
 
-require("dotenv").config({ path: __dirname + "../../.env" });
+// require("dotenv").config({ path: __dirname + "../../.env" });
 
-const PORT = process.env.PORT || 5000;
+console.log(">>>>>>>>>", process.env.PORT);
+const PORT = process.env.PORT;
 const server = http.createServer(app);
 
 // Setup Mongodb Connection
