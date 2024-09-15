@@ -9,7 +9,7 @@ const setupSocket = (server) => {
   io = new Server(server, {
     cors: {
       origin: "http://localhost:3000",
-      // origin: "http://schmooze-chat-app.s3-website.ap-south-1.amazonaws.com",
+      origin: "http://schmooze-chat-app.s3-website.ap-south-1.amazonaws.com",
       credentials: true, // Allow cookies and authentication headers
     },
   });
