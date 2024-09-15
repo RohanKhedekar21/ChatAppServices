@@ -1,6 +1,9 @@
 const User = require("../model/userModel");
 const brcypt = require("bcrypt");
+const { generateToken } = require("../utils/jwtHelper");
+const { setupSocket } = require("../config/socketSetup");
 
+// Register New User
 module.exports.register = async (req, res, next) => {
   console.info("Service Register call");
   try {
@@ -25,13 +28,18 @@ module.exports.register = async (req, res, next) => {
       password: hashedPassword,
     });
     delete user.password;
-    return res.json({ status: true, user });
+
+    // Generate Token
+    const token = generateToken(user);
+
+    return res.json({ status: true, user, token });
   } catch (e) {
     console.info("Error in service Register", e);
     next(e);
   }
 };
 
+// Login User
 module.exports.login = async (req, res, next) => {
   console.info("Service Login call");
   try {
@@ -49,13 +57,17 @@ module.exports.login = async (req, res, next) => {
 
     delete user.password;
 
-    return res.json({ status: true, user });
+    // Generate Token
+    const token = generateToken(user);
+
+    return res.json({ status: true, user, token });
   } catch (e) {
     console.info("Error in service login", e);
     next(e);
   }
 };
 
+// Set Profile Avatar
 module.exports.setAvatar = async (req, res, next) => {
   console.info("Service setAvatar call");
   try {
@@ -80,6 +92,7 @@ module.exports.setAvatar = async (req, res, next) => {
   }
 };
 
+// Get All Users
 module.exports.getAllUsers = async (req, res, next) => {
   console.info("Service getAllUsers call");
   try {
